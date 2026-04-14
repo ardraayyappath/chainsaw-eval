@@ -1,0 +1,159 @@
+# Scenario targets for chainsaw-eval.
+# Each package has four containers — one per forensic scenario tier:
+#
+#   S1 (ports 2201-2203) Full Visibility    — all artifacts present
+#   S2 (ports 2211-2213) Partial Cleanup   — pip cache retained, package uninstalled
+#   S3 (ports 2221-2223) Aggressive Cleanup — cache + package removed; shell history only
+#   S4 (ports 2231-2233) Persistence-Only  — only .pth file survives (litellm only)
+#
+# Prerequisites:
+#   make keys && make build
+#   # extract packages into packages/<scenario>/
+#   docker compose up -d
+
+x-target: &target-defaults
+  build: ./target
+  restart: "no"
+
+# ---------------------------------------------------------------------------
+# S1 — Full Visibility
+# ---------------------------------------------------------------------------
+services:
+  litellm-s1:
+    <<: *target-defaults
+    container_name: ceval-litellm-s1
+    hostname: litellm-s1
+    ports: ["2201:22"]
+    volumes: [./packages/litellm:/packages:ro]
+    environment: {SCENARIO: litellm, SCENARIO_MODE: s1}
+
+  num2words-s1:
+    <<: *target-defaults
+    container_name: ceval-num2words-s1
+    hostname: num2words-s1
+    ports: ["2202:22"]
+    volumes: [./packages/num2words:/packages:ro]
+    environment: {SCENARIO: num2words, SCENARIO_MODE: s1}
+
+  telnyx-s1:
+    <<: *target-defaults
+    container_name: ceval-telnyx-s1
+    hostname: telnyx-s1
+    ports: ["2203:22"]
+    volumes: [./packages/telnyx:/packages:ro]
+    environment: {SCENARIO: telnyx, SCENARIO_MODE: s1}
+
+  ultralytics-s1:
+    <<: *target-defaults
+    container_name: ceval-ultralytics-s1
+    hostname: ultralytics-s1
+    ports: ["2204:22"]
+    volumes: [./packages/ultralytics:/packages:ro]
+    environment: {SCENARIO: ultralytics, SCENARIO_MODE: s1}
+
+# ---------------------------------------------------------------------------
+# S2 — Partial Cleanup (pip cache retained, package uninstalled)
+# ---------------------------------------------------------------------------
+  litellm-s2:
+    <<: *target-defaults
+    container_name: ceval-litellm-s2
+    hostname: litellm-s2
+    ports: ["2211:22"]
+    volumes: [./packages/litellm:/packages:ro]
+    environment: {SCENARIO: litellm, SCENARIO_MODE: s2}
+
+  num2words-s2:
+    <<: *target-defaults
+    container_name: ceval-num2words-s2
+    hostname: num2words-s2
+    ports: ["2212:22"]
+    volumes: [./packages/num2words:/packages:ro]
+    environment: {SCENARIO: num2words, SCENARIO_MODE: s2}
+
+  telnyx-s2:
+    <<: *target-defaults
+    container_name: ceval-telnyx-s2
+    hostname: telnyx-s2
+    ports: ["2213:22"]
+    volumes: [./packages/telnyx:/packages:ro]
+    environment: {SCENARIO: telnyx, SCENARIO_MODE: s2}
+
+  ultralytics-s2:
+    <<: *target-defaults
+    container_name: ceval-ultralytics-s2
+    hostname: ultralytics-s2
+    ports: ["2214:22"]
+    volumes: [./packages/ultralytics:/packages:ro]
+    environment: {SCENARIO: ultralytics, SCENARIO_MODE: s2}
+
+# ---------------------------------------------------------------------------
+# S3 — Aggressive Cleanup (package + cache removed; shell history only)
+# ---------------------------------------------------------------------------
+  litellm-s3:
+    <<: *target-defaults
+    container_name: ceval-litellm-s3
+    hostname: litellm-s3
+    ports: ["2221:22"]
+    volumes: [./packages/litellm:/packages:ro]
+    environment: {SCENARIO: litellm, SCENARIO_MODE: s3}
+
+  num2words-s3:
+    <<: *target-defaults
+    container_name: ceval-num2words-s3
+    hostname: num2words-s3
+    ports: ["2222:22"]
+    volumes: [./packages/num2words:/packages:ro]
+    environment: {SCENARIO: num2words, SCENARIO_MODE: s3}
+
+  telnyx-s3:
+    <<: *target-defaults
+    container_name: ceval-telnyx-s3
+    hostname: telnyx-s3
+    ports: ["2223:22"]
+    volumes: [./packages/telnyx:/packages:ro]
+    environment: {SCENARIO: telnyx, SCENARIO_MODE: s3}
+
+  ultralytics-s3:
+    <<: *target-defaults
+    container_name: ceval-ultralytics-s3
+    hostname: ultralytics-s3
+    ports: ["2224:22"]
+    volumes: [./packages/ultralytics:/packages:ro]
+    environment: {SCENARIO: ultralytics, SCENARIO_MODE: s3}
+
+# ---------------------------------------------------------------------------
+# S4 — Persistence-Only (.pth re-planted; everything else removed)
+# Note: ultralytics uses no .pth mechanism; S4 leaves only shell history
+# (same effective state as S3 — included for completeness as scenario 16).
+# ---------------------------------------------------------------------------
+  litellm-s4:
+    <<: *target-defaults
+    container_name: ceval-litellm-s4
+    hostname: litellm-s4
+    ports: ["2231:22"]
+    volumes: [./packages/litellm:/packages:ro]
+    environment: {SCENARIO: litellm, SCENARIO_MODE: s4}
+
+  num2words-s4:
+    <<: *target-defaults
+    container_name: ceval-num2words-s4
+    hostname: num2words-s4
+    ports: ["2232:22"]
+    volumes: [./packages/num2words:/packages:ro]
+    environment: {SCENARIO: num2words, SCENARIO_MODE: s4}
+
+  telnyx-s4:
+    <<: *target-defaults
+    container_name: ceval-telnyx-s4
+    hostname: telnyx-s4
+    ports: ["2233:22"]
+    volumes: [./packages/telnyx:/packages:ro]
+    environment: {SCENARIO: telnyx, SCENARIO_MODE: s4}
+
+  ultralytics-s4:
+    <<: *target-defaults
+    container_name: ceval-ultralytics-s4
+    hostname: ultralytics-s4
+    ports: ["2234:22"]
+    volumes: [./packages/ultralytics:/packages:ro]
+    environment: {SCENARIO: ultralytics, SCENARIO_MODE: s4}

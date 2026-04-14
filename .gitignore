@@ -1,0 +1,16 @@
+# SSH keys — never commit private keys
+keys/
+
+# Downloaded/extracted malicious package artifacts
+packages/
+
+# Eval output — generated, not source
+results/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
